@@ -52,6 +52,15 @@ client.on('message', message => {
 				.catch(err => messageHandler.handleError(message.channel, err, "PC Online"))
 		}
 	}
+	else if (message.content.toLowerCase() == '!help' || message.content.toLowerCase() == '!about'){
+		//show list of commands and relevant links
+		let helpEmbed = new Discord.MessageEmbed();
+		helpEmbed.setTitle("GoblinBot");
+		helpEmbed.setColor("GREEN");
+		helpEmbed.addField("Commands", listOfCommands);
+		helpEmbed.addField("Links", links);
+		messageHandler.send(message.channel, helpEmbed, 'help', true);
+	}
 });
 
 // Log bot in
