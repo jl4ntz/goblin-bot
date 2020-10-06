@@ -1,0 +1,58 @@
+// This file implements the main event listener of the bot, which picks up messages, parses them for commands, and calls the appropriate functions.
+
+// Import the discord.js module
+const Discord = require('discord.js');
+
+// auth file
+var runningOnline = false; //The assumption is an auth file will be present iff running offline
+try{
+	var auth = require('./auth.json');
+	process.env.serviceID = auth.serviceID;
+	process.env.token = auth.token;
+}
+catch(e){
+	console.log('No auth file found');
+	runningOnline = true;
+}
+
+// commands
+var online = require('./online.js');
+var messageHandler = require('./messageHandler.js');
+
+const client = new Discord.Client();
+
+// https://discordapp.com/developers/applications/me
+const token = process.env.token;
+
+client.on('ready', () => {
+	console.log('Running on '+client.guilds.cache.size+' servers!');
+	client.user.setActivity('!g')
+});
+
+var listOfCommands = [
+"!g",
+]
+
+var links = [
+	"[GitHub page](https://github.com/jl4ntz/goblin-bot)",
+	"[Support server](https://discord.gg/s4NYsxt)",
+	"[Invite bot](https://discord.com/api/oauth2/authorize?client_id=762870299330740254&permissions=18432&scope=bot)"
+]
+
+// Create an event listener for messages
+client.on('message', message => {
+	if(message.author == client.user){
+		return;
+	}
+	if (message.content.match('!g$')){
+		let tags = ["gobs", "fooi", "fiji"];
+		for(x in tags){
+			online.online(tags[x], 'ps2:v2')
+				.then(res => messageHandler.send(message.channel, res, "PC Online", true))
+				.catch(err => messageHandler.handleError(message.channel, err, "PC Online"))
+		}
+	}
+});
+
+// Log bot in
+client.login(token);
