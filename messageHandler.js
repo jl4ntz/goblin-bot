@@ -2,7 +2,6 @@
 
 module.exports = {
     send: function(channel, message, context="default", embed=false){
-        console.log(message);
         if(embed && channel.type != 'dm' && !channel.permissionsFor(channel.guild.me).has('EMBED_LINKS')){
             channel.send('Please grant the "Embed Links" permission to use this command').then(function(result){
                 //message successfully sent, no action needed.
