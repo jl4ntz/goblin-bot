@@ -35,7 +35,6 @@ var listOfCommands = [
 
 var links = [
 	"[GitHub page](https://github.com/jl4ntz/goblin-bot)",
-	"[Support server](https://discord.gg/s4NYsxt)",
 	"[Invite bot](https://discord.com/api/oauth2/authorize?client_id=762870299330740254&permissions=18432&scope=bot)"
 ]
 
