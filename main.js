@@ -31,7 +31,8 @@ client.on('ready', () => {
 
 var listOfCommands = [
 "!g",
-"!isfrogstupid"
+"!isfrogstupid",
+"!stopbullying"
 ]
 
 var links = [
@@ -74,6 +75,38 @@ var frogMikeIsStupid = [
 		"frog mike is so dumb he tripped over a cordless phone."
 ]
 
+var doBully = true;
+const BULLY_DISABLED_MESSAGE =	"👁 Bullying features have been globally disabled by "
+const BULLY_ENABLED_MESSAGE = "Bullying features have been globally enabled by "
+const BULLY_DETAILS = "To globally re-enable bullying features answer the following question in the form of a command.  *e.g. \"!The Answer\"*";
+								
+var bullyQuestions = [{question: "In what country do 74% of youth experience bullying?", correctAnswers:['!samoa']}
+                     ,{question: "List one of the three core elements of bullying", correctAnswers:['!unwanted aggressive behavior', '!observed or perceived power imbalance', '!repetition or high likelihood of repetition of bullying behaviors']}
+                     ,{question: "According to the 2017 School Crime Supplement to the National Crime Victimization Survey (National Center for Education Statistics and Bureau of Justice), what percentage of students ages 12-18 who reported being bulled at school during the shool year were bulled online or by text?", correctAnswers:['!15%', '!15', '!fifteen', '!fifteen percent']}
+]
+
+var currentBullyQuestionNum = 0;
+var currentBullyAnswers = bullyQuestions[currentBullyQuestionNum].correctAnswers
+var userWhoDisabledBullying = "";
+
+function showBullyDisabledMessage(message) {
+	let bullyEmbed = new Discord.MessageEmbed()
+	.setColor('#780707')
+	.setTitle(BULLY_DISABLED_MESSAGE + userWhoDisabledBullying + ". 👁")
+	.setDescription(BULLY_DETAILS)
+	.addField('Question', bullyQuestions[currentBullyQuestionNum].question)
+	.addField('Resources', 'https://www.stopbullying.gov/')
+	messageHandler.send(message.channel, bullyEmbed, "PC Online", true);
+}
+
+function sendBullyRenabledEmbed(message){
+	let embed = new Discord.MessageEmbed()
+	.setColor('#033800')
+	.setTitle(BULLY_ENABLED_MESSAGE + message.author.username)
+	.setDescription("Disable bullying features with !stopbullying")
+	messageHandler.send(message.channel, embed, "PC Online", true);
+}
+
 // Create an event listener for messages
 client.on('message', message => {
 	if(message.author == client.user){
@@ -88,8 +121,30 @@ client.on('message', message => {
 		}
 	}
 	else if (message.content.toLowerCase() == '!isfrogstupid'){
-		let theMessage = frogMikeIsStupid[Math.floor(Math.random() * frogMikeIsStupid.length)];
-		messageHandler.send(message.channel, theMessage, "PC Online", false);
+		if(doBully) {
+			let jokeTitle = frogMikeIsStupid[Math.floor(Math.random() * frogMikeIsStupid.length)];
+			
+			let embed = new Discord.MessageEmbed()
+				.setTitle(jokeTitle)
+				.setDescription("To disable bullying features, use !stopbullying")
+			
+			messageHandler.send(message.channel, embed, "PC Online", false);	
+		} else {
+			showBullyDisabledMessage(message);
+		}
+	}
+	else if (doBully && message.content.toLowerCase() == "!stopbullying") {
+		userWhoDisabledBullying = message.author.username
+		showBullyDisabledMessage(message);
+		doBully = false;
+	} 
+	else if (!doBully && bullyQuestions[currentBullyQuestionNum].correctAnswers.indexOf(message.content.toLowerCase()) !== -1) {
+		doBully = true;
+		currentBullyQuestionNum++;
+		if(currentBullyQuestionNum == bullyQuestions.length) {
+			currentBullyQuestionNum = 0;
+		}
+		sendBullyRenabledEmbed(message);
 	}
 	else if (message.content.toLowerCase() == '!help' || message.content.toLowerCase() == '!about'){
 		//show list of commands and relevant links
