@@ -11,6 +11,7 @@ process.env.token = auth.token;
 // commands
 var online = require('./online.js');
 var bully = require('./bully.js');
+var headtohead = require('./headtohead.js');
 var messageHandler = require('./messageHandler.js');
 
 const client = new Discord.Client();
@@ -55,6 +56,12 @@ client.on('message', message => {
 	} 
 	else if (!bully.doBully() && message.content.toLowerCase() == bully.getCorrectEnableAnswer()) {
 		bully.reenableBully(message);
+	}
+	else if(message.content.substring(0,4).toLowerCase() == '!vs '){
+		let playerLists = message.content.substring(4).toLowerCase().split(" ");
+		headtohead.head2head(playerLists[0].split(","),playerLists[1].split(","))
+			.then(res => messageHandler.send(message.channel, res, "PC Online", true))
+			.catch(err => messageHandler.handleError(message.channel, err, "PC Online"))		
 	}
 	else if (message.content.toLowerCase() == '!help' || message.content.toLowerCase() == '!about'){
 		//show list of commands and relevant links

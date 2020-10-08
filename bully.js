@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
-var messageHandler = require('./../messageHandler.js');
-var frogMikeIsStupid = require('./../files/stupid.json');
-var bullyQuestions   = require('./../files/bullyQuestions.json');
+var messageHandler = require('./messageHandler.js');
+var frogMikeIsStupid = require('./files/stupid.json');
+var bullyQuestions   = require('./files/bullyQuestions.json');
 
 const BULLY_DISABLED_MESSAGE =	"👁 Bullying features have been globally disabled by "
 const BULLY_ENABLED_MESSAGE = "Bullying features have been globally enabled by "

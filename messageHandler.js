@@ -43,5 +43,14 @@ module.exports = {
     badQuery: function(input){
         // This is it's own function so a single list of disallowed characters can be maintained
         return input.match(/[<@>!+&?%*#$^()_:/\\.,`~[\]{}|+=]/g);
+    },
+    
+    badListQuery: function(inputList){
+        // This is it's own function so a single list of disallowed characters can be maintained
+        var bad=false;
+        for(var i in inputList) {
+            bad = inputList[i].match(/[<@>!+&?%*#$^()_:/\\.,`~[\]{}|+=]/g);
+        }
+        return bad;
     }
 }
