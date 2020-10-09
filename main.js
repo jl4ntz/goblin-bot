@@ -26,12 +26,12 @@ client.on('ready', () => {
 var listOfCommands = [
 "!g",
 "!isfrogstupid",
-"!stopbullying"
+"!stopbullying",
+"!vs <comma delimited list of players> <comma delimited list of players>"
 ]
 
 var links = [
 	"[GitHub page](https://github.com/jl4ntz/goblin-bot)",
-	"[Invite bot](https://discord.com/api/oauth2/authorize?client_id=762870299330740254&permissions=18432&scope=bot)"
 ]
 
 // Create an event listener for messages
@@ -42,7 +42,7 @@ client.on('message', message => {
 	
 	if (message.content.match('!g$')){
 		let tags = ["gobs", "fooi", "fiji"];
-		for(x in tags){
+		for(var x in tags){
 			online.online(tags[x], 'ps2:v2')
 				.then(res => messageHandler.send(message.channel, res, "PC Online", true))
 				.catch(err => messageHandler.handleError(message.channel, err, "PC Online"))

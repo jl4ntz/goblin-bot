@@ -2,108 +2,101 @@ var got = require('got');
 const Discord = require('discord.js');
 var messageHandler = require('./messageHandler.js');
 
+const characterNotFoundMessage = "Character not found"
 
-var head2headInfo = async function (player1List, player2List){
-	var player1CharacterIDList = [];
-	for (i in player1List) {
-		let uri = 'https://census.daybreakgames.com/s:'+process.env.serviceID+'/get/ps2:v2/character?name.first_lower=' + player1List[i] + '&c:show=character_id'
-		let response = "";
-		try{
-			response = await got(uri).json(); 
-		}
-		catch(err){
-			if(err.message.indexOf('404') > -1){
-				return new Promise(function(resolve, reject){
-					reject("API Unreachable");
-				})
-			}
-		}
-		if(typeof(response.error) !== 'undefined'){
-			if(response.error == 'service_unavailable'){
-				return new Promise(function(resolve, reject){
-					reject("Census API currently unavailable");
-				})
-			}
-			return new Promise(function(resolve, reject){
-				reject(response.error);	
-			})
-		}
-		if(typeof(response.character_list[0]) === 'undefined'){
-			return new Promise(function(resolve, reject){
-				reject("API Error");
-			})
-		}
-		
-		player1CharacterIDList.push(response.character_list[0].character_id)
-	}
-	
-	var player1ListKills=0;
-	var player2ListKills=0;
-
-	let uri = 'https://census.daybreakgames.com/s:'+process.env.serviceID+'/get/ps2:v2/characters_event_grouped?character_id=' + player1CharacterIDList + '&c:resolve=character_name'
+var characterInfo = async function(inPlayerList, playerName) {
+	let uri = 'https://census.daybreakgames.com/s:'+process.env.serviceID+'/get/ps2:v2/character?name.first_lower='+playerName+'&c:resolve=world&c:show=character_id,name.first,faction_id,world_id';
 	let response = "";
+	
 	try{
-		response = await got(uri).json(); 
-	}
-	catch(err){
-		if(err.message.indexOf('404') > -1){
-			return new Promise(function(resolve, reject){
-				reject("API Unreachable");
-			})
-		}
-	}
-	if(typeof(response.error) !== 'undefined'){
-		if(response.error == 'service_unavailable'){
-			return new Promise(function(resolve, reject){
-				reject("Census API currently unavailable");
-			})
-		}
-		return new Promise(function(resolve, reject){
-			reject(response.error);	
-		})
-	}
-	if(typeof(response.characters_event_grouped_list[0]) === 'undefined'){
-		return new Promise(function(resolve, reject){
-			reject("API Error");
+		response = await got(uri).json();
+	} catch(err) {
+		return new Promise(function(res, reject){
+			reject("API Unreachable");
 		})
 	}
 	
-	var player1KillCount=0;
-	var player2KillCount=0;
-	
-	for(var i in response.characters_event_grouped_list){
-		
-		for(var p2 in player2List) {
-			
-			if(typeof response.characters_event_grouped_list[i].character !== 'undefined'){
-				
-				if(typeof response.characters_event_grouped_list[i].character.name !== 'undefined') {
-					
-					if(response.characters_event_grouped_list[i].character.name.first_lower === player2List[p2]){
-						if(response.characters_event_grouped_list[i].table_type === "DEATH") {
-							player2KillCount=player2KillCount + Number(response.characters_event_grouped_list[i].count)
-						}
-						if(response.characters_event_grouped_list[i].table_type === "KILL") {
-							player1KillCount=player1KillCount + Number(response.characters_event_grouped_list[i].count)
-						}
-					}			
-				}
-			}
-		}
+	if(typeof(response.error) !== 'undefined') {
+		return new Promise(function(res,reject){
+			reject(response.error);
+		})
 	}
 	
-	let resObj = {
-		player1List: player1List,
-		player1KillCount: player1KillCount,
-		player2List: player2List,
-		player2KillCount: player2KillCount
+	if(typeof(response.returned) === 'undefined'){
+		return new Promise(function(res,reject){
+			reject("Bad response from census API")
+		})
 	}
 	
-	return new Promise(function(resolve, reject){
-		resolve(resObj);
+	if(response.returned != 1){
+		return new Promise(function(res,reject){
+			reject(characterNotFoundMessage + ': ' + playerName);
+		})
+	}
+	
+	let characterInfoResponse = {
+		inPlayerList: inPlayerList,
+		character_id: response.character_list[0].character_id,
+		name: response.character_list[0].name.first,
+		faction_id: response.character_list[0].faction_id,
+		world_id: response.character_list[0].world_id,
+		eventList: []
+	}
+	
+	return new Promise(function(res,reject){
+		res(characterInfoResponse)
 	})
 }
 
+var characterEvents = async function(character){
+	let uri = 'https://census.daybreakgames.com/s:'+process.env.serviceID+'/get/ps2:v2/characters_event_grouped?character_id='+character.character_id+'&type=KILL&c:join=character^show:faction_id'
+	let response = ""
+	
+	try{
+		response = await got(uri).json();
+	} catch(err) {
+		return new Promise(function(res, reject){
+			reject("API Unreachable");
+		})
+	}
+	
+	if(typeof(response.error) !== 'undefined') {
+		return new Promise(function(res,reject){
+			reject(response.error);
+		})
+	}
+	
+	if(typeof(response.returned) === 'undefined'){
+		return new Promise(function(res,reject){
+			reject("Bad response from census API")
+		})
+	}
+	
+	character.eventList = response.characters_event_grouped_list;
+	
+	return new Promise(function(res,reject){
+		res(character)
+	})
+}
+
+function getCharacterRetrievePromiseList(player1List, player2List){
+	var promiseList = [];
+	for(var i in player1List){
+		promiseList.push(characterInfo(1,player1List[i]));
+	}
+	for(var i in player2List){
+		promiseList.push(characterInfo(2,player2List[i]));
+	}
+	return promiseList;
+}
+
+function getCharacterEventsPromiseList(foundCharacters){
+	var promiseList = [];
+	for(var i in foundCharacters){
+		promiseList.push(characterEvents(foundCharacters[i]))
+	}
+	return promiseList
+}
 
 module.exports = {
 	head2head: async function(player1List, player2List){
@@ -112,20 +105,67 @@ module.exports = {
                 reject("Player list contains disallowed characters");
             })
 		}
-		try{
-			var h2hInfo = await head2headInfo(player1List, player2List);
+		
+		let characterRetrievePromiseList = getCharacterRetrievePromiseList(player1List, player2List);
+		let errors = [];
+		let foundCharacters = [];
+		
+		let resObj = {
+			list1Kills:0,
+			list2Kills:0,
+			list1TeamKills:0,
+			list2TeamKills:0
 		}
-		catch(error){
-			return new Promise(function(resolve, reject){
-				reject(error);
+		
+		var	h2hInfo = await Promise.allSettled(characterRetrievePromiseList).then(res => {
+				res.filter(r => r.status === 'rejected').map(r => r.reason).forEach(r => errors.push(r));
+				res.filter(r => r.status === 'fulfilled').map(r => r.value).forEach(r => foundCharacters.push(r));
 			})
-		}
-		let resEmbed = new Discord.MessageEmbed()
-		.setTitle(player1List.toString() + ' vs ' + player2List.toString())
-		.addField(player1List.toString() + ' kills', h2hInfo.player1KillCount)
-		.addField(player2List.toString() + ' kills', h2hInfo.player2KillCount)
-		return new Promise(function(resolve, reject){
-			resolve(resEmbed);
-		})
+			.then(async res => {
+				let characterEventsPromiseList = getCharacterEventsPromiseList(foundCharacters);
+				let foundEventLists = [];
+				await Promise.allSettled(characterEventsPromiseList).then(r => {
+					r.filter(x => x.status === 'rejected').map(x => x.reason).forEach(x => errors.push(x));
+					r.filter(x => x.status === 'fulfilled').map(x => x.value).forEach(x => foundEventLists.push(x));
+				
+					let playerList1CharacterIDs = foundEventLists.filter(x=>x.inPlayerList==1).map(x=>x.character_id);
+					let playerList2CharacterIDs = foundEventLists.filter(x=>x.inPlayerList==2).map(x=>x.character_id);
+					
+					foundEventLists.filter(x=>x.inPlayerList == 1).forEach(x => {
+						let countedEvents = x.eventList.filter(e => playerList2CharacterIDs.includes(e.character_id));
+						for(var i in countedEvents){
+							if(countedEvents[i].character_id_join_character.faction_id !== x.faction_id){
+								resObj.list1Kills = resObj.list1Kills + Number(countedEvents[i].count)
+							} else {
+								resObj.list1TeamKills = resObj.list1TeamKills + Number(countedEvents[i].count)
+							}
+						}
+					});
+					
+					foundEventLists.filter(x=>x.inPlayerList == 2).forEach(x => {
+						let countedEvents = x.eventList.filter(e => playerList1CharacterIDs.includes(e.character_id));
+						for(var i in countedEvents){
+							if(countedEvents[i].character_id_join_character.faction_id !== x.faction_id){
+								resObj.list2Kills = resObj.list2Kills + Number(countedEvents[i].count)
+							} else {
+								resObj.list2TeamKills = resObj.list2TeamKills + Number(countedEvents[i].count)
+							}
+						}
+					});
+				})
+			})
+			let resEmbed = new Discord.MessageEmbed()
+					.setTitle(player1List + ' vs ' + player2List)
+					.addField(player1List + ' kills', resObj.list1Kills)
+					.addField(player2List + ' kills', resObj.list2Kills)
+					.addField(player1List + ' team kills', resObj.list1TeamKills)
+					.addField(player2List + ' team kills', resObj.list2TeamKills)
+			
+			if(errors.length > 0) {
+				resEmbed.addField('errors', errors)
+			}
+			return new Promise(function(res,reject){
+				res(resEmbed)	
+			})
 	}
 }
