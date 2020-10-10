@@ -110,8 +110,15 @@ const worlds = {
 	"25":"Briggs"
 }
 
+const factions = {
+	"1":"VS",
+	"2":"NC",
+	"3":"TR",
+	"4":"NSO"
+}
+
 function getPrintableCharacterNameListList(playerList) {
-	return playerList.map(x => '[' + x.outfitAlias + ']' + x.name + '\t-\t' + worlds[x.world_id]);
+	return playerList.map(x => '[' + x.outfitAlias + ']' + x.name + '\t-\t' + factions[x.faction_id] + '\t-\t' + worlds[x.world_id]);
 }
 
 module.exports = {
