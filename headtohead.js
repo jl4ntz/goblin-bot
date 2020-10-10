@@ -40,8 +40,12 @@ var characterInfo = async function(inPlayerList, playerName) {
 		name: response.character_list[0].name.first,
 		faction_id: response.character_list[0].faction_id,
 		world_id: response.character_list[0].world_id,
-		outfitAlias: response.character_list[0].outfit.alias,
+		outfitAlias: "",
 		eventList: []
+	}
+	
+	if(typeof(response.character_list[0].outfit) !== 'undefined'){
+		characterInfoResponse.outfitAlias = response.character_list[0].outfit.alias
 	}
 	
 	return new Promise(function(res,reject){
