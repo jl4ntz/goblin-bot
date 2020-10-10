@@ -118,7 +118,14 @@ const factions = {
 }
 
 function getPrintableCharacterNameListList(playerList) {
-	return playerList.map(x => '[' + x.outfitAlias + ']' + x.name + '\t-\t' + factions[x.faction_id] + '\t-\t' + worlds[x.world_id]);
+	return playerList.map(x => {
+		var printedName = "";
+		if (x.outfitAlias.trim().length > 0){
+			printedName += '[' + x.outfitAlias + ']';
+		}
+		printedName += x.name + '\t-\t' + factions[x.faction_id] + '\t-\t' + worlds[x.world_id]
+		return printedName;
+	});
 }
 
 module.exports = {
@@ -187,8 +194,9 @@ module.exports = {
 					});
 				})
 			})
-			let resEmbed = new Discord.MessageEmbed()
-					.setTitle('Versus')
+			
+			let resEmbed = new Discord.MessageEmbed();
+			resEmbed.setTitle('Versus');
 			resEmbed.addField('Player 1 characters', getPrintableCharacterNameListList(resObj.characterList1), true);
 			resEmbed.addField('Kills', resObj.list1Kills,true)
 			resEmbed.addField('Team kills', resObj.list1TeamKills, true)
