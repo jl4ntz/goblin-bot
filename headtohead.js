@@ -5,7 +5,7 @@ var messageHandler = require('./messageHandler.js');
 const characterNotFoundMessage = "Character not found"
 
 var characterInfo = async function(inPlayerList, playerName) {
-	let uri = 'https://census.daybreakgames.com/s:'+process.env.serviceID+'/get/ps2:v2/character?name.first_lower='+playerName+'&c:resolve=world&c:show=character_id,name.first,faction_id,world_id';
+	let uri = 'https://census.daybreakgames.com/s:'+process.env.serviceID+'/get/ps2:v2/character?name.first_lower='+playerName+'&c:resolve=world,outfit(alias)&c:show=character_id,name.first,faction_id,world_id';
 	let response = "";
 	
 	try{
@@ -40,6 +40,7 @@ var characterInfo = async function(inPlayerList, playerName) {
 		name: response.character_list[0].name.first,
 		faction_id: response.character_list[0].faction_id,
 		world_id: response.character_list[0].world_id,
+		outfitAlias: response.character_list[0].outfit.alias,
 		eventList: []
 	}
 	
@@ -98,6 +99,21 @@ function getCharacterEventsPromiseList(foundCharacters){
 	return promiseList
 }
 
+const worlds = {
+	"19":"Jaeger",
+	"10":"Miller",
+	"13":"Cobalt",
+	"17":"Emerald",
+	"1":"Connery",
+	"40":"SolTech",
+	"24":"Apex",
+	"25":"Briggs"
+}
+
+function getPrintableCharacterNameListList(playerList) {
+	return playerList.map(x => '[' + x.outfitAlias + ']' + x.name + '\t-\t' + worlds[x.world_id]);
+}
+
 module.exports = {
 	head2head: async function(player1List, player2List){
 		if(messageHandler.badListQuery(player1List) || messageHandler.badListQuery(player2List)){
@@ -106,11 +122,19 @@ module.exports = {
             })
 		}
 		
+		if(player1List.length + player2List.length > 10) {
+			return new Promise(function(resolve, reject){
+                reject("Maximum 10 total characters allowed");
+            })
+		}
+		
 		let characterRetrievePromiseList = getCharacterRetrievePromiseList(player1List, player2List);
 		let errors = [];
 		let foundCharacters = [];
 		
 		let resObj = {
+			characterList1: [],
+			characterList2: [],
 			list1Kills:0,
 			list2Kills:0,
 			list1TeamKills:0,
@@ -120,6 +144,8 @@ module.exports = {
 		var	h2hInfo = await Promise.allSettled(characterRetrievePromiseList).then(res => {
 				res.filter(r => r.status === 'rejected').map(r => r.reason).forEach(r => errors.push(r));
 				res.filter(r => r.status === 'fulfilled').map(r => r.value).forEach(r => foundCharacters.push(r));
+				resObj.characterList1 = foundCharacters.filter(x => x.inPlayerList == 1);
+				resObj.characterList2 = foundCharacters.filter(x => x.inPlayerList == 2);
 			})
 			.then(async res => {
 				let characterEventsPromiseList = getCharacterEventsPromiseList(foundCharacters);
@@ -155,11 +181,13 @@ module.exports = {
 				})
 			})
 			let resEmbed = new Discord.MessageEmbed()
-					.setTitle(player1List + ' vs ' + player2List)
-					.addField(player1List + ' kills', resObj.list1Kills)
-					.addField(player2List + ' kills', resObj.list2Kills)
-					.addField(player1List + ' team kills', resObj.list1TeamKills)
-					.addField(player2List + ' team kills', resObj.list2TeamKills)
+					.setTitle('Versus')
+			resEmbed.addField('Player 1 characters', getPrintableCharacterNameListList(resObj.characterList1), true);
+			resEmbed.addField('Kills', resObj.list1Kills,true)
+			resEmbed.addField('Team kills', resObj.list1TeamKills, true)
+			resEmbed.addField('Player 2 characters', getPrintableCharacterNameListList(resObj.characterList2), true);
+			resEmbed.addField('Kills', resObj.list2Kills, true)
+			resEmbed.addField('Team kills', resObj.list2TeamKills, true)
 			
 			if(errors.length > 0) {
 				resEmbed.addField('errors', errors)
