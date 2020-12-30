@@ -1,2 +1,2 @@
 # goblin-bot
-discord bot copy and pasted from auraxis-bot: https://github.com/ultimastormGH/auraxis-bot
+discord bot based on auraxis-bot: https://github.com/ultimastormGH/auraxis-bot

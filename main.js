@@ -40,13 +40,8 @@ client.on('message', message => {
 		return;
 	}
 	
-	if (message.content.match('!g$')){
-		let tags = ["gobs", "fooi", "fiji"];
-		for(var x in tags){
-			online.online(tags[x], 'ps2:v2')
-				.then(res => messageHandler.send(message.channel, res, "PC Online", true))
-				.catch(err => messageHandler.handleError(message.channel, err, "PC Online"))
-		}
+	if (message.content.match('!g$')) {
+		online.onlineGoblins(message);
 	}
 	else if (message.content.toLowerCase() == '!isfrogstupid'){
 		bully.getBullyResponse(message);
