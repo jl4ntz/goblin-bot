@@ -102,7 +102,7 @@ var onlineInfo = async function(oTag, platform) {
 
 module.exports = {
 	onlineGoblins: async function(message) {
-		let tags = ["gobs", "fooi", "fiji", "Guck"];
+		let tags = ["gobs", "fooi", "fiji", "guck"];
 		let errors = [];
 		let foundOnline = [];
 		var promiseList = [];
