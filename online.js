@@ -163,8 +163,8 @@ module.exports = {
 
 								}
 							}
+							messageHandler.send(message.channel, resEmbed, "PC Online", true);
 						}
-						messageHandler.send(message.channel, resEmbed, "PC Online", true);
 					}
 				}
 			})
