@@ -26,6 +26,7 @@ client.on('ready', () => {
 var listOfCommands = [
 "!g",
 "!isfrogstupid",
+"!isdtbstupid",
 "!stopbullying",
 "!vs <comma delimited list of players> <comma delimited list of players>"
 ]
@@ -46,14 +47,14 @@ client.on('message', message => {
 	else if (message.content.toLowerCase() == '!isfrogstupid'){
 		bully.getBullyResponse(message);
 	}
+	else if (message.content.toLowerCase() == '!isdtbstupid') {
+		bully.dtb(message);
+	}	
 	else if (bully.doBully() && message.content.toLowerCase() == "!stopbullying") {
 		bully.showBullyDisabledMessage(message);
 	} 
 	else if (!bully.doBully() && message.content.toLowerCase() == bully.getCorrectEnableAnswer()) {
 		bully.reenableBully(message);
-	}
-	else if (message.content.toLowerCase() == '!isdtbstupid') {
-		bully.dtb(message);
 	}
 	else if(message.content.substring(0,4).toLowerCase() == '!vs '){
 		let playerLists = message.content.substring(4).toLowerCase().split(" ");
