@@ -37,6 +37,7 @@ var links = [
 
 // Create an event listener for messages
 client.on('message', message => {
+	let answer = bully.getCorrectEnableAnswer();
 	if(message.author == client.user){
 		return;
 	}
@@ -53,7 +54,7 @@ client.on('message', message => {
 	else if (bully.doBully() && message.content.toLowerCase() == "!stopbullying") {
 		bully.showBullyDisabledMessage(message);
 	} 
-	else if (!bully.doBully() && message.content.toLowerCase() == bully.getCorrectEnableAnswer()) {
+	else if (!bully.doBully() && bully.getCorrectEnableAnswer().indexOf(message.content.toLocaleLowerCase()) !== -1) {
 		bully.reenableBully(message);
 	}
 	else if(message.content.substring(0,4).toLowerCase() == '!vs '){

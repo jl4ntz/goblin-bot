@@ -61,7 +61,8 @@ module.exports = {
 		sendBullyRenabledEmbed(message);
 	},
 	getCorrectEnableAnswer: function() {
-		return bullyQuestions[currentBullyQuestionNum].correctAnswers
+		let answers = bullyQuestions[currentBullyQuestionNum].correctAnswers;
+		return answers;
 	},
 	doBully: function() {
 		return doBully
