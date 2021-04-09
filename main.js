@@ -52,6 +52,9 @@ client.on('message', message => {
 	else if (!bully.doBully() && message.content.toLowerCase() == bully.getCorrectEnableAnswer()) {
 		bully.reenableBully(message);
 	}
+	else if (message.content.toLowerCase() == '!isdtbstupid') {
+		bully.dtb(message);
+	}
 	else if(message.content.substring(0,4).toLowerCase() == '!vs '){
 		let playerLists = message.content.substring(4).toLowerCase().split(" ");
 		headtohead.head2head(playerLists[0].split(","),playerLists[1].split(","))

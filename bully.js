@@ -64,5 +64,11 @@ module.exports = {
     },
     doBully: function() {
         return doBully
+    },
+    dtb: function(message) {
+    	let author = message.author;
+    	let embed = new Discord.MessageEmbed()
+    	.setDescription("<@217033022803935233>, " +  message.author.username + " would like to know if you still think DTB is stupid.");
+    	messageHandler.send(message.channel, embed, "PC Online", false);
     }
 }
