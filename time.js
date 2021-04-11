@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-var timezones = require('./files/timezones.json');
+var timezones = require('./timezones.json');
 var messageHandler = require('./messageHandler.js');
 
 function constructOutputString(inputDate, pastDate, days, hours, minutes) {
