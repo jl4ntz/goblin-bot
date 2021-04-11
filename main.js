@@ -30,7 +30,7 @@ var listOfCommands = [
 "!isdtbstupid",
 "!stopbullying",
 "!vs <comma delimited list of players> <comma delimited list of players>",
-"!time <timestamp>   (timestamp format example: 2021-04-20 04:20 PST)"
+"!time hh:mm tt zone   (example: !time 04:20 PM PDT)"
 ]
 
 var links = [
