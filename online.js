@@ -62,6 +62,12 @@ var onlineInfo = async function(oTag, platform) {
 	}
 	if (typeof(data.leader_character_id_join_character) !== 'undefined') {
 		resObj.faction = data.leader_character_id_join_character.faction_id;
+		if(data.leader_character_id_join_characters_world.world_id == "1") {
+			resObj.world = "Connery"
+		}
+	    if(data.leader_character_id_join_characters_world.world_id == "17") {
+			resObj.world = "Emerald"
+		}
 	}
 	let pcModifier = 0;
 	let rankNames = ["", "", "", "", "", "", "", ""];
@@ -132,7 +138,7 @@ module.exports = {
 				else {
 					for (var x in foundOnline) {
 						let resEmbed = new Discord.MessageEmbed();
-						resEmbed.setTitle(foundOnline[x].name);
+						resEmbed.setTitle(foundOnline[x].name + " - " + foundOnline[x].world);
 						resEmbed.setDescription(foundOnline[x].alias + "\n" + foundOnline[x].onlineCount + "/" + foundOnline[x].memberCount + " online");
 						resEmbed.setTimestamp();
 						resEmbed.setURL('http://ps2.fisu.pw/outfit/?name=' + foundOnline[x].alias);
