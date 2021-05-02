@@ -46,7 +46,7 @@ function getOutputsForServer(playerCounts) {
 function getPopulationOutputString(outputs) {
     let outputString = "TR: " + outputs.trPlayers + "\t(" + outputs.trPct + "%)\n" +
                        "NC: " + outputs.ncPlayers + "\t(" + outputs.ncPct + "%)\n" +
-                       "VS: " + outputs.trPlayers + "\t(" + outputs.vsPct + "%)\n" +
+                       "VS: " + outputs.vsPlayers + "\t(" + outputs.vsPct + "%)\n" +
                        "NS: " + outputs.nsPlayers + "\n" +
                        "Total: " + outputs.totalPlayers
     return outputString                        
