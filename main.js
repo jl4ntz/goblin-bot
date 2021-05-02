@@ -45,7 +45,7 @@ client.on('message', message => {
 		return;
 	}
 	
-	if (message.content.toLowerCase() == "!g$") {
+	if (message.content.toLowerCase() == "!g") {
 		online.onlineGoblins(message);
 	}
 	else if (message.content.toLowerCase() == "!pop") {
