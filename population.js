@@ -47,7 +47,8 @@ function getPopulationOutputString(outputs) {
     let outputString = "TR: " + outputs.trPlayers + "\t(" + outputs.trPct + "%)\n" +
                        "NC: " + outputs.ncPlayers + "\t(" + outputs.ncPct + "%)\n" +
                        "VS: " + outputs.trPlayers + "\t(" + outputs.vsPct + "%)\n" +
-                       "NS: " + outputs.nsPlayers
+                       "NS: " + outputs.nsPlayers + "\n" +
+                       "Total: " + outputs.totalPlayers
     return outputString                        
 }
 
