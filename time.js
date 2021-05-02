@@ -34,6 +34,7 @@ function constructOutputString(inputDate, pastDate, days, hours, minutes) {
     if (pastDate) {
         outputString = outputString + " ago"
     }
+    
     return outputString
 }
 
@@ -79,15 +80,17 @@ module.exports = {
         }
 
         var inputTimezoneOffset = "";
+        var inputTimezoneIsDST = false;
 
         for (var i = 0; i < timezones.length; i++) {
             if (timezones[i].abbr.toLowerCase() == inputTimezone.toLowerCase()) {
-                inputTimezoneOffset = timezones[i].offset
+                inputTimezoneOffset = timezones[i].offset;
+                inputTimezoneIsDST = timezones[i].isdst;
             }
         }
 
         if (inputTimezoneOffset == "") {
-            messageHandler.send(message.channel, "Unable to resolve timezone " + inputTimezone, "PC Online", true);
+            messageHandler.send(message.channel, "Unsupported timezone " + inputTimezone, "PC Online", true);
             return;
         }
 

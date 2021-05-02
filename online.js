@@ -11,10 +11,11 @@ var onlineInfo = async function(oTag, platform) {
 	catch (err) {
 		if (err.message.indexOf('404') > -1) {
 			return new Promise(function(resolve, reject) {
-				reject("API Unreachable");
+				reject("API error searching for " + oTag);
 			})
 		}
 	}
+	
 	if (typeof(response.error) !== 'undefined') {
 		if (response.error == 'service_unavailable') {
 			return new Promise(function(resolve, reject) {
@@ -27,7 +28,7 @@ var onlineInfo = async function(oTag, platform) {
 	}
 	if (typeof(response.outfit_list) === 'undefined') {
 		return new Promise(function(resolve, reject) {
-			reject("API Error");
+			reject("API Error searching for " + oTag);
 		})
 	}
 	if (typeof(response.outfit_list[0]) === 'undefined') {
@@ -50,22 +51,22 @@ var onlineInfo = async function(oTag, platform) {
 		onlineCount: 0
 	}
 	if (data.members[0].online_status == "service_unavailable") {
-		resObj.onlineCount = "Online member count unavailable";
+		resObj.onlineCount = oTag + " online member count unavailable";
 		return new Promise(function(resolve, reject) {
 			resolve(resObj);
 		})
 	}
 	if (typeof(data.members[0].name) === 'undefined') {
 		return new Promise(function(resolve, reject) {
-			reject("API error: names not returned")
+			reject(oTag + " API error: names not returned")
 		})
 	}
 	if (typeof(data.leader_character_id_join_character) !== 'undefined') {
 		resObj.faction = data.leader_character_id_join_character.faction_id;
-		if(data.leader_character_id_join_characters_world.world_id == "1") {
+		if (data.leader_character_id_join_characters_world.world_id == "1") {
 			resObj.world = "Connery"
 		}
-	    if(data.leader_character_id_join_characters_world.world_id == "17") {
+		if (data.leader_character_id_join_characters_world.world_id == "17") {
 			resObj.world = "Emerald"
 		}
 	}
@@ -106,6 +107,20 @@ var onlineInfo = async function(oTag, platform) {
 	})
 }
 
+function handleAPIErrors(errors, message) {
+	if (errors.length > 0) {
+		var errorStrings = "";
+		errors.forEach(error => {
+			errorStrings += error + "\n";
+		})
+
+		let resEmbed = new Discord.MessageEmbed();
+		resEmbed.setTitle("Errors");
+		resEmbed.setDescription(errorStrings);
+		messageHandler.send(message.channel, resEmbed, "PC Online", true);
+	}
+}
+
 module.exports = {
 	onlineGoblins: async function(message) {
 		let tags = ["gobs", "fooi", "fiji", "guck", "gob", "rent", "f00i"];
@@ -123,6 +138,8 @@ module.exports = {
 			})
 			.then(r => {
 
+				handleAPIErrors(errors, message)
+
 				var noOneOnline = true;
 				for (var x in foundOnline) {
 					if (foundOnline[x].onlineCount > 0) {
@@ -130,7 +147,7 @@ module.exports = {
 					}
 				}
 
-				if (noOneOnline) {
+				if (noOneOnline && errors.length === 0) {
 					let resEmbed = new Discord.MessageEmbed();
 					resEmbed.setTitle("#deadfit");
 					messageHandler.send(message.channel, resEmbed, "PC Online", true)
