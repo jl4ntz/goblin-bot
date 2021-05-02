@@ -14,6 +14,7 @@ var bully = require('./bully.js');
 var headtohead = require('./headtohead.js');
 var messageHandler = require('./messageHandler.js');
 var time = require('./time.js');
+var population = require('./population.js');
 
 const client = new Discord.Client();
 // https://discordapp.com/developers/applications/me
@@ -30,7 +31,8 @@ var listOfCommands = [
 "!isdtbstupid",
 "!stopbullying",
 "!vs <comma delimited list of players> <comma delimited list of players>",
-"!time hh:mm tt zone   (example: !time 04:20 PM PDT)"
+"!time hh:mm tt zone   (example: !time 04:20 PM PDT)",
+"!pop"
 ]
 
 var links = [
@@ -43,10 +45,12 @@ client.on('message', message => {
 		return;
 	}
 	
-	if (message.content.toLowerCase().match('!g$')) {
+	if (message.content.toLowerCase() == "!g$") {
 		online.onlineGoblins(message);
 	}
-	else if (message.content.toLowerCase().substr(0,6) == "!time ") {
+	else if (message.content.toLowerCase() == "!pop") {
+		population.showPop(message);
+	}	else if (message.content.toLowerCase().substr(0,6) == "!time ") {
 		time.timeUntil(message);
 	}
 	else if (message.content.toLowerCase() == '!isfrogstupid'){

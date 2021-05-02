@@ -69,7 +69,13 @@ module.exports = {
         let inputMinute = inputTimeParts[1].padStart(2, '0');
         
         if(inputTT.toUpperCase() == 'PM') {
-            inputHour = (parseInt(inputHour, 10) + 12).toString();
+            if(inputHour != "12"){
+              inputHour = (parseInt(inputHour, 10) + 12).toString();   
+            }
+        } else {
+            if(inputHour == "12") {
+                inputHour = "00"
+            }
         }
 
         var inputTimezoneOffset = "";
