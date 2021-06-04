@@ -81,6 +81,37 @@ module.exports = {
 
         var inputTimezoneOffset = "";
         var inputTimezoneIsDST = false;
+        let currentDate = new Date();
+        
+        Date.prototype.stdTimezoneOffset = function () {
+            var jan = new Date(this.getFullYear(), 0, 1);
+            var jul = new Date(this.getFullYear(), 6, 1);
+            return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+        }  
+
+        Date.prototype.isDstObserved = function () {
+            return this.getTimezoneOffset() < this.stdTimezoneOffset();
+        }
+        
+        if(inputTimezone.toLowerCase() == "connery") {
+            if(currentDate.isDstObserved()) {
+                inputString = inputString.replace(inputTimezone, "PDT")
+                inputTimezone = "PDT"
+            } else {
+                inputString = inputString.replace(inputTimezone, "PST")
+                inputTimezone = "PST"
+            }
+        }
+        
+        if(inputTimezone.toLowerCase() == "emerald" || inputTimezone.toLowerCase() == "jaeger") {
+            if(currentDate.isDstObserved()) {
+                inputString = inputString.replace(inputTimezone, "EDT")
+                inputTimezone = "EDT"
+            } else {
+                inputString = inputString.replace(inputTimezone, "EST")
+                inputTimezone = "EST"
+            }
+        }        
 
         for (var i = 0; i < timezones.length; i++) {
             if (timezones[i].abbr.toLowerCase() == inputTimezone.toLowerCase()) {
@@ -94,20 +125,10 @@ module.exports = {
             return;
         }
         
-        Date.prototype.stdTimezoneOffset = function () {
-            var jan = new Date(this.getFullYear(), 0, 1);
-            var jul = new Date(this.getFullYear(), 6, 1);
-            return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
-        }  
-
-        Date.prototype.isDstObserved = function () {
-            return this.getTimezoneOffset() < this.stdTimezoneOffset();
-        }
 
         let cleanTimestamp = date + "T" + inputHour + ":" + inputMinute + ":" + "00.000" + inputTimezoneOffset;
 
         let inputParsedDate = new Date(cleanTimestamp);
-        let currentDate = new Date();
 
         let dateDiff = inputParsedDate - currentDate;
 
@@ -136,9 +157,12 @@ module.exports = {
         }
         
                 
-        if(currentDate.isDstObserved() != inputTimezoneIsDST) {
-            let timezone = new Date().toLocaleTimeString('en-us',{timeZoneName:'short'}).split(' ')[2];
-            messageHandler.send(message.channel, "Warning: input timezone does not match current daylight savings status.  Current timezone on Connery is " + timezone, "PC Online", false);
+        if(currentDate.isDstObserved() != inputTimezoneIsDST && inputTimezoneIsDST != null) {
+            if(currentDate.isDstObserved()) {
+                messageHandler.send(message.channel, "Warning: Daylight savings is currently observed.  Input timezone is not a daylight savings timezone.", "PC Online", false);
+            } else {
+                messageHandler.send(message.channel, "Warning: Daylight savings is not currently observed.  Input timezone is a daylight savings timezone.", "PC Online", false);   
+            }
         }
 
         messageHandler.send(message.channel, constructOutputString(inputString, pastDate, days, hours, minutes), "PC Online", false);
