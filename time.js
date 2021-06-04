@@ -93,6 +93,16 @@ module.exports = {
             messageHandler.send(message.channel, "Unsupported timezone " + inputTimezone, "PC Online", true);
             return;
         }
+        
+        Date.prototype.stdTimezoneOffset = function () {
+            var jan = new Date(this.getFullYear(), 0, 1);
+            var jul = new Date(this.getFullYear(), 6, 1);
+            return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+        }  
+
+        Date.prototype.isDstObserved = function () {
+            return this.getTimezoneOffset() < this.stdTimezoneOffset();
+        }
 
         let cleanTimestamp = date + "T" + inputHour + ":" + inputMinute + ":" + "00.000" + inputTimezoneOffset;
 
@@ -123,6 +133,12 @@ module.exports = {
 
         if (dateDiff >= 60000) {
             minutes = Math.floor(dateDiff / 60000)
+        }
+        
+                
+        if(currentDate.isDstObserved() != inputTimezoneIsDST) {
+            let timezone = new Date().toLocaleTimeString('en-us',{timeZoneName:'short'}).split(' ')[2];
+            messageHandler.send(message.channel, "Warning: input timezone does not match current daylight savings status.  Current timezone on Connery is " + timezone, "PC Online", false);
         }
 
         messageHandler.send(message.channel, constructOutputString(inputString, pastDate, days, hours, minutes), "PC Online", false);
