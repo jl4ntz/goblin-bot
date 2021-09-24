@@ -109,7 +109,7 @@ var onlineInfo = async function(oTag, platform) {
 
 function fuckYouL(name) {
 	if(name == "LoveTheirLiberator" || name =="LoveThisLiberator" || name == "LoveThatLiberator" || name == "2CertsIs2CertsNC" || name == "2CertsIs2CertsVS" || name == "2CertsIs2CertsTR") {
-		return "A Liar.  This guy makes up lies."
+		return "🤥 A LIAR WHO MAKES UP LIES 🤥"
 	} else {
 		return name
 	}
