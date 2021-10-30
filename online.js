@@ -91,7 +91,7 @@ var onlineInfo = async function(oTag, platform) {
 	for (i in data.members) {
 		if (data.members[i].online_status > 0) {
 			resObj.onlineCount += 1;
-			onlineMembers[Number.parseInt(data.members[i].rank_ordinal) - pcModifier].push("[" + fuckYouL(data.members[i].name.first) + "](" + urlBase + data.members[i].name.first + ")");
+			onlineMembers[Number.parseInt(data.members[i].rank_ordinal) - pcModifier].push("[" + data.members[i].name.first + "](" + urlBase + data.members[i].name.first + ")");
 		}
 		if (pcModifier == 0 && rankNames[Number.parseInt(data.members[i].rank_ordinal)] == "") {
 			rankNames[Number.parseInt(data.members[i].rank_ordinal)] = data.members[i].rank;
@@ -105,14 +105,6 @@ var onlineInfo = async function(oTag, platform) {
 	return new Promise(function(resolve, reject) {
 		resolve(resObj);
 	})
-}
-
-function fuckYouL(name) {
-	if(name == "LoveTheirLiberator" || name =="LoveThisLiberator" || name == "LoveThatLiberator" || name == "2CertsIs2CertsNC" || name == "2CertsIs2CertsVS" || name == "2CertsIs2CertsTR") {
-		return "🤥 A LIAR WHO MAKES UP LIES 🤥"
-	} else {
-		return name
-	}
 }
 
 function handleAPIErrors(errors, message) {
