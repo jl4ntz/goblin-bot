@@ -9,18 +9,21 @@ process.env.serviceID = auth.serviceID;
 process.env.token = auth.token;
 
 // commands
-var online = require('./online.js');
-var bully = require('./bully.js');
-var headtohead = require('./headtohead.js');
-var messageHandler = require('./messageHandler.js');
-var time = require('./time.js');
-var population = require('./population.js');
+const online = require('./online.js');
+const bully = require('./bully.js');
+const headtohead = require('./headtohead.js');
+const messageHandler = require('./messageHandler.js');
+const time = require('./time.js');
+const population = require('./population.js');
+const wsListener = require('./wsListener.js');
+const sitrep = require('./sitrep.js');
 
 const client = new Discord.Client();
 // https://discordapp.com/developers/applications/me
 const token = process.env.token;
 
 client.on('ready', () => {
+	wsListener.start();
 	console.log('Running on '+client.guilds.cache.size+' servers!');
 	client.user.setActivity('!g')
 });
@@ -70,6 +73,9 @@ client.on('message', message => {
 		headtohead.head2head(playerLists[0].split(","),playerLists[1].split(","))
 			.then(res => messageHandler.send(message.channel, res, "PC Online", true))
 			.catch(err => messageHandler.handleError(message.channel, err, "PC Online"))		
+	}
+	else if(message.content.toLowerCase() == "!sitrep") {
+		sitrep.sendZonePopulationStats(message);
 	}
 	else if (message.content.toLowerCase() == '!help' || message.content.toLowerCase() == '!about'){
 		//show list of commands and relevant links

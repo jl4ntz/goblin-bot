@@ -7,5 +7,11 @@
   "dependencies": {
     "discord.js": "^12.3.1",
     "got": "^10.7.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "jest": "^27.5.1"
   }
 }
