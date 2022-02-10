@@ -8,6 +8,8 @@ let pcTimeout = 0;
 
 function listen() {
     let experienceEvents = '{"service":"event","action":"subscribe","characters":["all"],"eventNames":["GainExperience"],"worlds":["1","17"]}';
+    let metagameEvents= '{"service":"event","action":"subscribe","worlds":["1","17"],"eventNames":["MetagameEvent"]}';
+    
     let pcURI = 'wss://push.planetside2.com/streaming?environment=ps2&service-id=s:'+ process.env.serviceID;
     if(!pcRunning) {
         let pcClient = new WebSocket(pcURI);
@@ -15,6 +17,7 @@ function listen() {
         pcClient.on('open', function open(){
                 console.log('Connected to PC Stream API');
                 pcClient.send(experienceEvents);
+                pcClient.send(metagameEvents);
                 pcRunning = true;
         });
         

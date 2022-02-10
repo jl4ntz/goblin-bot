@@ -123,7 +123,7 @@ function handleAPIErrors(errors, message) {
 
 module.exports = {
 	onlineGoblins: async function(message) {
-		let tags = ["gobs", "fooi", "fiji", "gob", "rent", "f00i"];
+		let tags = ["gobs", "fooi", "fiji", "gob", "rent", "fool"];
 		let errors = [];
 		let foundOnline = [];
 		var promiseList = [];
