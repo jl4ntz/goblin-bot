@@ -8,7 +8,7 @@ let pcTimeout = 0;
 
 function listen() {
     let experienceEvents = '{"service":"event","action":"subscribe","characters":["all"],"eventNames":["GainExperience"],"worlds":["1","17"]}';
-    let metagameEvents= '{"service":"event","action":"subscribe","worlds":["1","17"],"eventNames":["MetagameEvent"]}';
+    let metagameEvents= '{"service":"event","action":"subscribe","worlds":["1","17"],"eventNames":["MetagameEvent","ContinentLock","FacilityControl"]}';
     
     let pcURI = 'wss://push.planetside2.com/streaming?environment=ps2&service-id=s:'+ process.env.serviceID;
     if(!pcRunning) {
