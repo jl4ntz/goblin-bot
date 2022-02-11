@@ -180,6 +180,14 @@ function getAlertEndTimeStamp(metagame_event_id, timestamp) {
     case "156":
     case "157":
     case "158":
+    case "211":
+    case "212":
+    case "213":
+    case "214":
+    case "222":
+    case "223":
+    case "224":
+    case "226":
         duration = 5400;
         break;
     //Unstable Meltdowns
@@ -228,8 +236,9 @@ const getPopulationStats = async function() {
       })
 
       if (zoneCount > 0) {
-        if(shouldAddAlertIcon(getZoneData(world, zone))){
-          zoneName += ' 🚨'
+        let addAlertInfo = shouldAddAlertIcon(getZoneData(world, zone));
+        if(addAlertInfo){
+          zoneName = '🚨 ' + zoneName;
         }
         zoneStats[zoneName] = zoneCount;
       }

@@ -48,7 +48,7 @@ describe('#getPopulationStats()', function(){
         
         await sitrep.handleMessage(startAlert.payload);
         populationStats = await sitrep.getPopulationStats();
-        assert.equal(populationStats["Emerald"]["Indar 🚨"],1);
+        assert.equal(populationStats["Emerald"]["🚨 Indar"],1);
         
         await sitrep.handleMessage(endAlert.payload);
         populationStats = await sitrep.getPopulationStats();
