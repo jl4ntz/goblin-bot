@@ -154,6 +154,7 @@ const handleMessage = async function(message) {
       if(zoneData[i].world_id == message.world_id && zoneData[i].zone_id == getZone(message.zone_id)) {
         zoneData[i].lockTimestamp = message.timestamp;
         zoneData[i].isLocked = true;
+        console.log(getTimestamp() + ' zoneData[' + i + '] after ContinentLock: ' + JSON.stringify(zoneData[i]));
         break;
       }
     }    
@@ -162,8 +163,9 @@ const handleMessage = async function(message) {
   if(message.event_name == 'FacilityControl') {
     for (let i = 0; i < zoneData.length; i++) {
       if(zoneData[i].world_id == message.world_id && zoneData[i].zone_id == getZone(message.zone_id)) {
-        if(+zoneData[i].lockTimestamp < +message.timestamp - 60){
+        if(+zoneData[i].lockTimestamp < +message.timestamp - 60 && zoneData[i].isLocked){
           zoneData[i].isLocked = false;
+          console.log(getTimestamp() + ' zoneData[' + i + '] after continent unlock detected: ' + JSON.stringify(zoneData[i]));
         }
         break;
       }
@@ -173,6 +175,7 @@ const handleMessage = async function(message) {
   if(message.event_name == 'MetagameEvent') {
     for (let i = 0; i < zoneData.length; i++) {
       if(zoneData[i].world_id == message.world_id && zoneData[i].zone_id == getZone(message.zone_id)) {
+        console.log(getTimestamp() + ' received MetaGameEvent: ' + JSON.stringify(message));
         if(message.metagame_event_state == '135') {
           zoneData[i].hasAlert = true;
           zoneData[i].alertEndTimestamp = getAlertEndTimeStamp(message.metagame_event_id, message.timestamp);
@@ -181,11 +184,12 @@ const handleMessage = async function(message) {
         if(message.metagame_event_state == '138') {
           zoneData[i].hasAlert = false;
         }
+        console.log(getTimestamp() + ' zoneData[' + i + '] after MetaGameEvent: ' + JSON.stringify(zoneData[i]));
         break;
       }
     } 
   }
-}
+};
 
 function getAlertEndTimeStamp(metagame_event_id, timestamp) {
   var duration = 0;
@@ -342,6 +346,13 @@ function getNextUnlockContinent(world_id){
   return oldestLockedContinentName;
 }
 
+function getTimestamp () {
+  const pad = (n,s=2) => (`${new Array(s).fill(0)}${n}`).slice(-s);
+  const d = new Date();
+  
+  return `${pad(d.getFullYear(),4)}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
 module.exports = {
   getZoneData,
   getZone,
@@ -359,6 +370,7 @@ module.exports = {
     let resEmbed = new Discord.MessageEmbed();
     
     let zonePopulationData = await getPopulationStats().then(response => {
+      console.log(getTimestamp() + ' PopulationStats: ' + JSON.stringify(response));
       resEmbed.setTitle("Planetside 2 Zone Population");
       resEmbed.addField("Connery", getOutputString(response["Connery"]), true);
       resEmbed.addField("Emerald", getOutputString(response["Emerald"]), true);
