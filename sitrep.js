@@ -9,112 +9,111 @@ const zones = {
   "14": "Koltyr",
   "344": "Oshur",
   "361": "Desolation"
-}
+};
 
-const zoneData = [
-    {
-      world_id:"1",
-      zone_id:"2",
-      name:"Indar",
-      lockTimestamp:"0",
-      hasAlert:"false"
-    },
-    {
-      world_id:"1",
-      zone_id:"4",
-      name:"Hossin",
-      lockTimestamp:"0",
-      hasAlert:"false"
-    },
-    {
-      world_id:"1",
-      zone_id:"6",
-      name:"Amerish",
-      lockTimestamp:"0",
-      hasAlert:"false"
-    },    
-    {
-      world_id:"1",
-      zone_id:"8",
-      name:"Esamir",
-      lockTimestamp:"0",
-      hasAlert:"false"
-    },       
-    {
-      world_id:"1",
-      zone_id:"14",
-      name:"Koltyr",
-      lockTimestamp:"0",
-      hasAlert:"false"
-    },   
-    {
-      world_id:"1",
-      zone_id:"344",
-      name:"Oshur",
-      lockTimestamp:"0",
-      hasAlert:"false"
-    },  
-    {
-      world_id:"1",
-      zone_id:"361",
-      name:"Desolation",
-      lockTimestamp:"0",
-      hasAlert:"false"
-    },
-    {
-      world_id:"17",
-      zone_id:"2",
-      name:"Indar",
-      lockTimestamp:"0",
-      hasAlert:"false"
-    },
-    {
-      world_id:"17",
-      zone_id:"4",
-      name:"Hossin",
-      lockTimestamp:"0",
-      hasAlert:"false"
-    },
-    {
-      world_id:"17",
-      zone_id:"6",
-      name:"Amerish",
-      lockTimestamp:"0",
-      hasAlert:"false"
-    },    
-    {
-      world_id:"17",
-      zone_id:"8",
-      name:"Esamir",
-      lockTimestamp:"0",
-      hasAlert:"false"
-    },       
-    {
-      world_id:"17",
-      zone_id:"14",
-      name:"Koltyr",
-      lockTimestamp:"0",
-      hasAlert:"false"
-    },   
-    {
-      world_id:"17",
-      zone_id:"344",
-      name:"Oshur",
-      lockTimestamp:"0",
-      hasAlert:"false"
-    },  
-    {
-      world_id:"17",
-      zone_id:"361",
-      name:"Desolation",
-      lockTimestamp:"0",
-      hasAlert:"false"
-    }    
+const zoneData = [{
+    world_id: "1",
+    zone_id: "2",
+    name: "Indar",
+    lockTimestamp: "0",
+    hasAlert: "false"
+  },
+  {
+    world_id: "1",
+    zone_id: "4",
+    name: "Hossin",
+    lockTimestamp: "0",
+    hasAlert: "false"
+  },
+  {
+    world_id: "1",
+    zone_id: "6",
+    name: "Amerish",
+    lockTimestamp: "0",
+    hasAlert: "false"
+  },
+  {
+    world_id: "1",
+    zone_id: "8",
+    name: "Esamir",
+    lockTimestamp: "0",
+    hasAlert: "false"
+  },
+  {
+    world_id: "1",
+    zone_id: "14",
+    name: "Koltyr",
+    lockTimestamp: "0",
+    hasAlert: "false"
+  },
+  {
+    world_id: "1",
+    zone_id: "344",
+    name: "Oshur",
+    lockTimestamp: "0",
+    hasAlert: "false"
+  },
+  {
+    world_id: "1",
+    zone_id: "361",
+    name: "Desolation",
+    lockTimestamp: "0",
+    hasAlert: "false"
+  },
+  {
+    world_id: "17",
+    zone_id: "2",
+    name: "Indar",
+    lockTimestamp: "0",
+    hasAlert: "false"
+  },
+  {
+    world_id: "17",
+    zone_id: "4",
+    name: "Hossin",
+    lockTimestamp: "0",
+    hasAlert: "false"
+  },
+  {
+    world_id: "17",
+    zone_id: "6",
+    name: "Amerish",
+    lockTimestamp: "0",
+    hasAlert: "false"
+  },
+  {
+    world_id: "17",
+    zone_id: "8",
+    name: "Esamir",
+    lockTimestamp: "0",
+    hasAlert: "false"
+  },
+  {
+    world_id: "17",
+    zone_id: "14",
+    name: "Koltyr",
+    lockTimestamp: "0",
+    hasAlert: "false"
+  },
+  {
+    world_id: "17",
+    zone_id: "344",
+    name: "Oshur",
+    lockTimestamp: "0",
+    hasAlert: "false"
+  },
+  {
+    world_id: "17",
+    zone_id: "361",
+    name: "Desolation",
+    lockTimestamp: "0",
+    hasAlert: "false"
+  }
 ];
 
 function getZoneData(world_id, zone_id) {
   for (let i = 0; i < zoneData.length; i++) {
-    if(zoneData[i].world_id == world_id && zoneData[i].zone_id == zone_id) {
+    if (zoneData[i].world_id == world_id && zoneData[i].zone_id == zone_id) {
       return zoneData[i];
     }
   }
@@ -125,75 +124,74 @@ function getZoneData(world_id, zone_id) {
 const worlds = {
   "1": "Connery",
   "17": "Emerald"
-}
+};
 
 function getZone(zone_id) {
-  return zone_id & 0xFFFF
+  return zone_id & 0xFFFF;
 }
 
 let characterMap = new Map();
-let worldZoneMap = new Map();
 
 const handleMessage = async function(message) {
   if ((message.world_id !== "1" && message.world_id !== "17") || !zones.hasOwnProperty(getZone(message.zone_id))) {
     return;
   }
-  
-  if(message.event_name == 'GainExperience') {
+
+  if (message.event_name == 'GainExperience') {
     let characterData = {
       lastSeen: message.timestamp,
       zone_id: getZone(message.zone_id),
       world_id: message.world_id
     };
 
-    characterMap.set(message.character_id, characterData); 
+    characterMap.set(message.character_id, characterData);
   }
-  
-  if(message.event_name == 'ContinentLock') {
+
+  if (message.event_name == 'ContinentLock') {
     for (let i = 0; i < zoneData.length; i++) {
-      if(zoneData[i].world_id == message.world_id && zoneData[i].zone_id == getZone(message.zone_id)) {
+      if (zoneData[i].world_id == message.world_id && zoneData[i].zone_id == getZone(message.zone_id)) {
         zoneData[i].lockTimestamp = message.timestamp;
         zoneData[i].isLocked = true;
         console.log(getTimestamp() + ' zoneData[' + i + '] after ContinentLock: ' + JSON.stringify(zoneData[i]));
         break;
       }
-    }    
+    }
   }
-  
-  if(message.event_name == 'FacilityControl') {
+
+  if (message.event_name == 'FacilityControl') {
     for (let i = 0; i < zoneData.length; i++) {
-      if(zoneData[i].world_id == message.world_id && zoneData[i].zone_id == getZone(message.zone_id)) {
-        if(+zoneData[i].lockTimestamp < +message.timestamp - 60 && zoneData[i].isLocked){
+      if (zoneData[i].world_id == message.world_id && zoneData[i].zone_id == getZone(message.zone_id)) {
+        if (+zoneData[i].lockTimestamp < +message.timestamp - 60 && zoneData[i].isLocked) {
           zoneData[i].isLocked = false;
           console.log(getTimestamp() + ' zoneData[' + i + '] after continent unlock detected: ' + JSON.stringify(zoneData[i]));
         }
         break;
       }
-    }    
+    }
   }
-  
-  if(message.event_name == 'MetagameEvent') {
+
+  if (message.event_name == 'MetagameEvent') {
     for (let i = 0; i < zoneData.length; i++) {
-      if(zoneData[i].world_id == message.world_id && zoneData[i].zone_id == getZone(message.zone_id)) {
+      if (zoneData[i].world_id == message.world_id && zoneData[i].zone_id == getZone(message.zone_id)) {
         console.log(getTimestamp() + ' received MetaGameEvent: ' + JSON.stringify(message));
-        if(message.metagame_event_state == '135') {
+        if (message.metagame_event_state == '135') {
           zoneData[i].hasAlert = true;
           zoneData[i].alertEndTimestamp = getAlertEndTimeStamp(message.metagame_event_id, message.timestamp);
         }
-        
-        if(message.metagame_event_state == '138') {
+
+        if (message.metagame_event_state == '138') {
           zoneData[i].hasAlert = false;
         }
         console.log(getTimestamp() + ' zoneData[' + i + '] after MetaGameEvent: ' + JSON.stringify(zoneData[i]));
         break;
       }
-    } 
+    }
   }
 };
 
 function getAlertEndTimeStamp(metagame_event_id, timestamp) {
   var duration = 0;
-  switch(metagame_event_id) {
+  switch (metagame_event_id) {
     //Continent Lock alerts
     case "147":
     case "148":
@@ -215,9 +213,9 @@ function getAlertEndTimeStamp(metagame_event_id, timestamp) {
     case "223":
     case "224":
     case "226":
-        duration = 5400;
-        break;
-    //Unstable Meltdowns
+      duration = 5400;
+      break;
+      //Unstable Meltdowns
     case "176":
     case "177":
     case "178":
@@ -230,18 +228,22 @@ function getAlertEndTimeStamp(metagame_event_id, timestamp) {
     case "191":
     case "192":
     case "193":
-        duration = 2700;
-        break;
-    //Koltyr Alerts
+      duration = 2700;
+      break;
+      //Koltyr Alerts
     case "208":
     case "209":
     case "210":
-        duration = 1800;
-        break;
+      duration = 1800;
+      break;
     default:
-        return 0;
+      return 0;
   }
   return +timestamp + duration;
+}
+
+function minutesAgoTimestamp(minutes) {
+  return Math.floor(Date.now() / 1000) - (+minutes * 60);
 }
 
 const getPopulationStats = async function() {
@@ -256,19 +258,26 @@ const getPopulationStats = async function() {
       let zoneName = zones[zone];
       let zonePopulationCount = 0;
 
+      let characterTimeoutSeconds = minutesAgoTimestamp(5);
+      
       characterMap.forEach(character => {
-        if (character.world_id == world && character.zone_id == zone && character.lastSeen >= fiveMinutesAgo()) {
+        if (character.world_id == world && character.zone_id == zone && character.lastSeen >= characterTimeoutSeconds) {
           zonePopulationCount++;
         }
-      })
+
+        if (character.lastSeen < characterTimeoutSeconds) {
+          characterMap.delete(character.character_id);
+        }
+      });
 
       if (zonePopulationCount > 0) {
         let addAlertInfo = shouldAddAlertIcon(getZoneData(world, zone));
         let zoneDetail = {};
-        if(addAlertInfo){
+        if (addAlertInfo) {
           zoneDetail.hasAlert = true;
           zoneDetail.alertRemainingTime = getRemainingAlertTime(world, zone);
-        } else {
+        }
+        else {
           zoneDetail.hasAlert = false;
           zoneDetail.alertRemainingTime = '';
         }
@@ -279,80 +288,78 @@ const getPopulationStats = async function() {
     worldStats[worldName] = zoneStats;
   });
   return worldStats;
-}
+};
 
 function shouldAddAlertIcon(zoneData) {
-  if(zoneData.hasAlert && Math.floor(Date.now() / 1000) < zoneData.alertEndTimestamp) {
+  if (zoneData.hasAlert && Math.floor(Date.now() / 1000) < zoneData.alertEndTimestamp) {
     return true;
-  } else {
+  }
+  else {
     return false;
   }
 }
 
-function fiveMinutesAgo() {
-  return Math.floor(Date.now() / 1000) - 300;
-}
-
 function getOutputString(zoneStats) {
   let output = "";
-  let keysSorted = Object.keys(zoneStats).sort(function(a,b){return zoneStats[b].population-zoneStats[a].population})
-  keysSorted.forEach(key =>{
-    if(zoneStats[key].isLocked){
-      output += '🔒 '
+  let keysSorted = Object.keys(zoneStats).sort(function(a, b) { return zoneStats[b].population - zoneStats[a].population });
+  keysSorted.forEach(key => {
+    if (zoneStats[key].isLocked) {
+      output += '🔒 ';
     }
     output += key + ": " + zoneStats[key].population;
-    if(zoneStats[key].hasAlert) {
+    if (zoneStats[key].hasAlert) {
       output += '  (🚨 ' + zoneStats[key].alertRemainingTime + ")";
     }
-    output+='\n';
-  })
+    output += '\n';
+  });
   return output;
 }
 
-function getRemainingAlertTime(world_id, zone_id){
+function getRemainingAlertTime(world_id, zone_id) {
   var response = '';
   let currentTimestamp = Math.floor(Date.now() / 1000);
   let alertEndTimestamp = getZoneData(world_id, zone_id).alertEndTimestamp;
-  if(alertEndTimestamp !== 'undefined') {
+  if (alertEndTimestamp !== 'undefined') {
     var secondsLeft = +alertEndTimestamp - +currentTimestamp;
-    
+
     let hours = Math.floor(+secondsLeft / 3600);
     secondsLeft = +secondsLeft - (+hours * 3600);
     let minutes = Math.floor(+secondsLeft / 60);
     secondsLeft = +secondsLeft - (+minutes * 60);
-    
+
     response = '';
-    if(+hours > 0) {
-      response += hours + 'h '
+    if (+hours > 0) {
+      response += hours + 'h ';
     }
-    response += minutes + 'm'
+    response += minutes + 'm';
   }
   return response;
 }
 
-function getNextUnlockContinent(world_id){
-  const checkedZones = ['2','4','6','8','344'];
-  let oldestLockedTimestamp = '9999999999';  //initialize to future timestamp
+function getNextUnlockContinent(world_id) {
+  const checkedZones = ['2', '4', '6', '8', '344'];
+  let oldestLockedTimestamp = '9999999999'; //initialize to future timestamp
   let oldestLockedContinentName = '';
   for (let i = 0; i < zoneData.length; i++) {
-    if(zoneData[i].world_id == world_id && checkedZones.includes(zoneData[i].zone_id)) {
-      if(typeof zoneData[i].isLocked === 'undefined'){
+    if (zoneData[i].world_id == world_id && checkedZones.includes(zoneData[i].zone_id)) {
+      if (typeof zoneData[i].isLocked === 'undefined') {
         return 'unknown';
-      } else if (zoneData[i].isLocked){
-        if(zoneData[i].lockTimestamp < oldestLockedTimestamp){
+      }
+      else if (zoneData[i].isLocked) {
+        if (zoneData[i].lockTimestamp < oldestLockedTimestamp) {
           oldestLockedTimestamp = zoneData[i].lockTimestamp;
           oldestLockedContinentName = zoneData[i].name;
-        } 
+        }
       }
     }
   }
   return oldestLockedContinentName;
 }
 
-function getTimestamp () {
-  const pad = (n,s=2) => (`${new Array(s).fill(0)}${n}`).slice(-s);
+function getTimestamp() {
+  const pad = (n, s = 2) => (`${new Array(s).fill(0)}${n}`).slice(-s);
   const d = new Date();
-  
+
   return `${pad(d.getFullYear(),4)}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 }
 
@@ -371,7 +378,7 @@ module.exports = {
   },
   sendZonePopulationStats: async function(message) {
     let resEmbed = new Discord.MessageEmbed();
-    
+
     let zonePopulationData = await getPopulationStats().then(response => {
       console.log(getTimestamp() + ' PopulationStats: ' + JSON.stringify(response));
       resEmbed.setTitle("Planetside 2 Zone Population");
@@ -379,13 +386,13 @@ module.exports = {
       resEmbed.addField("Emerald", getOutputString(response["Emerald"]), true);
       let conneryNextContinent = getNextUnlockContinent('1');
       let emeraldNextContient = getNextUnlockContinent('17');
-      
-      if(conneryNextContinent != 'unknown') {
-        resEmbed.addField("Connery next continent", getNextUnlockContinent('1'));  
+
+      if (conneryNextContinent != 'unknown') {
+        resEmbed.addField("Connery next continent", getNextUnlockContinent('1'));
       }
-      
-      if(emeraldNextContient != 'unknown'){
-        resEmbed.addField("Emerald next continent", getNextUnlockContinent('17'));  
+
+      if (emeraldNextContient != 'unknown') {
+        resEmbed.addField("Emerald next continent", getNextUnlockContinent('17'));
       }
     }).catch(e => {
       resEmbed.addField('error', e);
