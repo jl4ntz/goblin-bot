@@ -282,6 +282,7 @@ const getPopulationStats = async function() {
           zoneDetail.alertRemainingTime = '';
         }
         zoneDetail.population = zonePopulationCount;
+        zoneDetail.isLocked = getZoneData(world, zone).isLocked;
         zoneStats[zoneName] = zoneDetail;
       }
     });

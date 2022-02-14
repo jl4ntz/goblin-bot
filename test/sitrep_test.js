@@ -64,6 +64,7 @@ describe('#getPopulationStats()', function() {
         let endAlert = JSON.parse('{"payload":{"event_name":"MetagameEvent","metagame_event_id":"149","metagame_event_state":"138","timestamp":"1644465857","world_id":"17","zone_id":"2"},"service":"event","type":"serviceMessage"}');
         let addCharacter = JSON.parse('{"payload":{"character_id":"5429228603772128721","event_name":"GainExperience","timestamp":"4800150569","world_id":"17","zone_id":"2"},"service":"event","type":"serviceMessage"}');
         let expiredAlert = JSON.parse('{"payload":{"event_name":"MetagameEvent","metagame_event_id":"149","metagame_event_state":"135","timestamp":"1581342432","world_id":"17","zone_id":"2"},"service":"event","type":"serviceMessage"}');
+        let continentLock = JSON.parse('{"payload":{"event_name":"ContinentLock","timestamp":"100","world_id":"17","zone_id":"2"},"service":"event","type":"serviceMessage"}');
 
         await sitrep.handleMessage(addCharacter.payload);
         let populationStats = await sitrep.getPopulationStats();
@@ -80,6 +81,10 @@ describe('#getPopulationStats()', function() {
         await sitrep.handleMessage(expiredAlert.payload);
         populationStats = await sitrep.getPopulationStats();
         assert.equal(populationStats["Emerald"]["Indar"]["population"], 1);
+        
+        await sitrep.handleMessage(continentLock.payload);
+        populationStats = await sitrep.getPopulationStats();
+        assert.equal(populationStats["Emerald"]["Indar"]["isLocked"], true);
     });
 });
 
