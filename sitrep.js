@@ -297,6 +297,9 @@ function getOutputString(zoneStats) {
   let output = "";
   let keysSorted = Object.keys(zoneStats).sort(function(a,b){return zoneStats[b].population-zoneStats[a].population})
   keysSorted.forEach(key =>{
+    if(zoneStats[key].isLocked){
+      output += '🔒 '
+    }
     output += key + ": " + zoneStats[key].population;
     if(zoneStats[key].hasAlert) {
       output += '  (🚨 ' + zoneStats[key].alertRemainingTime + ")";

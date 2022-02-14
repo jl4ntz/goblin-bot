@@ -108,6 +108,11 @@ describe('#getOutputString()', function() {
         zoneStats = JSON.parse('{"Indar":{"hasAlert":true,"alertRemainingTime":"4h 20m","population":107},"Oshur":{"hasAlert":false,"alertRemainingTime":"","population":24}}');
         assert.equal(sitrep.getOutputString(zoneStats), 'Indar: 107  (🚨 4h 20m)\nOshur: 24\n');
     });
+    
+    it('should add 🔒 when continent is locked', function() {
+       let zoneStats = JSON.parse('{"Indar":{"hasAlert":true,"alertRemainingTime":"4h 20m","population":107},"Oshur":{"hasAlert":false,"alertRemainingTime":"","population":24,"isLocked":true}}');
+       assert.equal(sitrep.getOutputString(zoneStats), 'Indar: 107  (🚨 4h 20m)\n🔒 Oshur: 24\n')
+    });
 });
 
 describe('#getNextUnlockContinent()', function() {
