@@ -364,7 +364,13 @@ function getTimestamp() {
   return `${pad(d.getFullYear(),4)}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 }
 
+function printZoneData() {
+  console.log(getTimestamp() + ' - zoneData: ' + JSON.stringify(zoneData));
+  return JSON.stringify(zoneData);
+}
+
 module.exports = {
+  printZoneData,
   getZoneData,
   getZone,
   getAlertEndTimeStamp,

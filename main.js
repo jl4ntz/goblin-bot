@@ -77,6 +77,9 @@ client.on('message', message => {
 	else if(message.content.toLowerCase() == "!sitrep") {
 		sitrep.sendZonePopulationStats(message);
 	}
+	else if(message.content.toLowerCase() == "!zonedata") {
+		messageHandler.send(message.channel, sitrep.printZoneData(), "PC Online", false);
+	}
 	else if (message.content.toLowerCase() == '!help' || message.content.toLowerCase() == '!about'){
 		//show list of commands and relevant links
 		let helpEmbed = new Discord.MessageEmbed();
