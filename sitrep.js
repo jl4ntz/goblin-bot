@@ -301,6 +301,9 @@ function shouldAddAlertIcon(zoneData) {
 }
 
 function getOutputString(zoneStats) {
+  if(Object.keys(zoneStats).length == 0) {
+    return  "Zone data unavailable."
+  }
   let output = "";
   let keysSorted = Object.keys(zoneStats).sort(function(a, b) { return zoneStats[b].population - zoneStats[a].population });
   keysSorted.forEach(key => {

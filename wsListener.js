@@ -12,7 +12,8 @@ function listen() {
     let pcURI = 'wss://push.planetside2.com/streaming?environment=ps2&service-id=s:'+ process.env.serviceID;
     
     if(!pcRunning) {
-        let pcClient = new WebSocket(pcURI);
+        let pcClient = new WebSocket(pcURI, {rejectUnauthorized: false});
+    
         
         
         pcClient.on('open', function open(){
